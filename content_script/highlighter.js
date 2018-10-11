@@ -1,9 +1,18 @@
 (function() {
-    let keywordStr = window.localStorage.getItem('highlight__mor__keywords')
-    let keywords = keywordStr ? JSON.parse(keywordStr) : []
-    let reg = new RegExp(keywords.join('|'), 'g')
+    let keywords = [],reg,_switch
 
-    let _switch = window.localStorage.getItem('highlight__mor__switch') || 'on'
+    chrome.storage.local.get({
+        highlight__mor__keywords: '',
+        highlight__mor__switch: 'on',
+    }, items => {
+        let keywordStr = items.highlight__mor__keywords
+
+        keywords = keywordStr ? JSON.parse(keywordStr) : []
+        _switch = items.highlight__mor__switch
+        reg = new RegExp(keywords.join('|'), 'g')
+
+        highLight() // 因为chrome storage读取是异步的
+    })
 
     const highLightTagHead = '<span\
         style="background: rgb(255, 198, 0);\
@@ -74,7 +83,10 @@
     chrome.runtime.onMessage.addListener(function({cmd, keywordList, regStr}, sender, sendResponse){
         if(cmd === 'highlight__mor__updatekeyword') {
             keywords = keywordList
-            window.localStorage.setItem('highlight__mor__keywords', JSON.stringify(keywords))
+
+            chrome.storage.local.set({
+                highlight__mor__keywords: JSON.stringify(keywords),
+            })
 
             reg = new RegExp(regStr, 'g')
             cancelHight()
@@ -92,18 +104,27 @@
         if (cmd === 'highlight__mor__offhight') {
             cancelHight()
             _switch = 'off'
-            window.localStorage.setItem('highlight__mor__switch', 'off')
+
+            chrome.storage.local.set({
+                highlight__mor__switch: 'off',
+            })
         }
 
         if (cmd === 'highlight__mor__onhight') {
             _switch = 'on'
-            window.localStorage.setItem('highlight__mor__switch', 'on')
+
+            chrome.storage.local.set({
+                highlight__mor__switch: 'on',
+            })
             highLight()
         }
 
         if (cmd === 'highlight__mor__clearkeyword') {
             keywords = []
-            window.localStorage.removeItem('highlight__mor__keywords')
+            
+            chrome.storage.local.set({
+                highlight__mor__keywords: JSON.stringify(keywords),
+            })
             cancelHight()
         }
     })

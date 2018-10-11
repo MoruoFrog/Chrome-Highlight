@@ -16,5 +16,9 @@
             "all_frames": true,
             "matches": ["<all_urls>"]
         }
+    ],
+
+    "permissions": [
+        "storage"
     ]
 }
