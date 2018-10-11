@@ -4,10 +4,11 @@
     chrome.storage.local.get({
         highlight__mor__keywords: '',
         highlight__mor__switch: 'on',
+        test: [],
     }, items => {
         let keywordStr = items.highlight__mor__keywords
 
-        keywords = keywordStr ? JSON.parse(keywordStr) : []
+        keywords = keywordStr || []
         _switch = items.highlight__mor__switch
         reg = new RegExp(keywords.join('|'), 'g')
 
@@ -85,7 +86,7 @@
             keywords = keywordList
 
             chrome.storage.local.set({
-                highlight__mor__keywords: JSON.stringify(keywords),
+                highlight__mor__keywords: keywords,
             })
 
             reg = new RegExp(regStr, 'g')
@@ -123,7 +124,7 @@
             keywords = []
             
             chrome.storage.local.set({
-                highlight__mor__keywords: JSON.stringify(keywords),
+                highlight__mor__keywords: keywords,
             })
             cancelHight()
         }
