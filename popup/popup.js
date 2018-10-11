@@ -38,12 +38,9 @@ document.getElementById('confirm').addEventListener('click', function (e) {
     const value = document.querySelector('[name=keywords').value.trim()
     if (!value) return
 
-    const keywordList = value.split(/\s/)
-    // const regStr = keywordList.join('|')
-
+    const keywordList = value.split(/\s+/)
     sendMessageToContentScript({
         cmd: 'highlight__mor__updatekeyword',
-        // regStr,
         keywordList,
     })
 })
@@ -51,6 +48,7 @@ document.getElementById('confirm').addEventListener('click', function (e) {
 sendMessageToContentScript({
     cmd: 'highlight__mor__getsetting',
 }, function ({cmd, keywords, _switch}) {
+    console.log(arguments)
     if (cmd === 'highlight__mor__getsetting') {
         document.querySelector('[name=keywords]').value = keywords.join('\n')
         highlightSwitch = _switch

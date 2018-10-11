@@ -1,8 +1,14 @@
 {
     "manifest_version": 2,
-    "name": "test",
-    "version": "1.0",
-    "description": "just test",
+    "name": "创宇高亮插件",
+    "version": "1.0.0",
+    "description": "chrome高亮插件",
+
+    "icons": {
+        "16": "icon.png",
+        "48": "icon.png",
+        "128": "icon.png"
+    },
 
     "browser_action": {
         "default_icon": "icon.png",
