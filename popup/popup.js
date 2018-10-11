@@ -16,13 +16,13 @@ document.querySelector('.switch').addEventListener('click', function (e) {
         highlightSwitch = 'off'
         switchBar.classList.remove('on')
         sendMessageToContentScript({
-            cmd: 'highlight__mor__offhight',
+            cmd: 'highlight__mor__off',
         })
     } else {
         highlightSwitch = 'on'
         switchBar.classList.add('on')
         sendMessageToContentScript({
-            cmd: 'highlight__mor__onhight',
+            cmd: 'highlight__mor__on',
         })
     }
 })
@@ -39,11 +39,11 @@ document.getElementById('confirm').addEventListener('click', function (e) {
     if (!value) return
 
     const keywordList = value.split(/\s/)
-    const regStr = keywordList.join('|')
+    // const regStr = keywordList.join('|')
 
     sendMessageToContentScript({
         cmd: 'highlight__mor__updatekeyword',
-        regStr,
+        // regStr,
         keywordList,
     })
 })
