@@ -47,7 +47,9 @@ document.getElementById('confirm').addEventListener('click', function (e) {
 
 sendMessageToContentScript({
     cmd: 'highlight__mor__getsetting',
-}, function ({cmd, keywords, _switch}) {
+}, function (response) {
+    if (!response) return
+    const {cmd, keywords, _switch} = response
     if (cmd === 'highlight__mor__getsetting') {
         document.querySelector('[name=keywords]').value = keywords.join('\n')
         highlightSwitch = _switch

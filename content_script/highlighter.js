@@ -70,7 +70,7 @@
                 ;[...element.childNodes]
                     .filter(node => node.nodeType === 3 
                                 && !node.parentNode.dataset.highlighted // 被高亮之后需要标记，否则会无限循环
-                                && !excludeTagName.includes(node.tagName)
+                                && !excludeTagName.includes(node.parentElement.tagName.toUpperCase())
                                 && document.body.contains(node))
                     .forEach(textNode => {
                         const text = textNode.data
