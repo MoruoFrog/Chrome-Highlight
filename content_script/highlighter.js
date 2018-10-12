@@ -1,19 +1,21 @@
 (function() {
+    const getRegFromKeywods = arr => {
+    }
+
     const highLighter = (function () {
         const storage  = chrome.storage.local
         const singleton = {}
         const events = []
-
+        const styleTypeCount = 6
         // 插入的dom
-        const highLightTagHead = '<span\
-            style="background: rgb(255, 198, 0);\
-                border-radius: 3px;\
-                box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 3px;\
-                display:inline;\
-                color: black;\
-                padding: 0 2px; "\
-            data-highlighted="1">'
+        // const highLightTagHead = '<span class="_higtlight_chrome_extension_mor" data-highlighted="1">'
         const highLightTagTail = '</span>'
+        const gethighLightTagHead = i => {
+            const index = i % styleTypeCount + 1
+            return `<span\
+                        class="_higtlight_chrome_extension_mor _higtlight_chrome_extension_mor__style__${index}"\
+                        data-highlighted="1">`
+        }
 
         let keywords = [],
             reg,
@@ -31,7 +33,7 @@
         
                 keywords = keywordStr || []
                 _switch = items.highlight__mor__switch
-                reg = new RegExp(keywords.join('|'), 'g')
+                reg = getRegFromStrList(keywords)
                 singleton.highLight() // 因为chrome storage读取是异步的
             })
 
@@ -77,7 +79,12 @@
                         if (text.search(reg) === -1) return
     
                         const newElement = document.createElement('morun')
-                        newElement.innerHTML = text.replace(reg, match => `${highLightTagHead}${match}${highLightTagTail}`)
+                        newElement.innerHTML = text.replace(reg, match => {
+                            const index = keywords.indexOf(match)
+                            if (index > -1) {
+                                return `${gethighLightTagHead(index)}${match}${highLightTagTail}`
+                            }
+                        })
                         textNode.replaceWith(newElement)
                         highlightedElements.push(newElement)
                     })
@@ -135,8 +142,7 @@
                 singleton.cancelHight()
 
                 if (keywords.length > 0) {
-                    const regStr = keywords.join('|')
-                    reg = new RegExp(regStr, 'g')
+                    reg = getRegFromStrList(keywords)
                     singleton.highLight()
                 }
             }
