@@ -1,27 +1,29 @@
 (function() {
-    const getRegFromKeywods = arr => {
-    }
-
     const highLighter = (function () {
         const storage  = chrome.storage.local
         const singleton = {}
         const events = []
         const styleTypeCount = 6
         // 插入的dom
-        // const highLightTagHead = '<span class="_higtlight_chrome_extension_mor" data-highlighted="1">'
-        const highLightTagTail = '</span>'
+        const highLightTagTail = '</i>'
         const gethighLightTagHead = i => {
             const index = i % styleTypeCount + 1
-            return `<span\
+            return `<i\
                         class="_higtlight_chrome_extension_mor _higtlight_chrome_extension_mor__style__${index}"\
                         data-highlighted="1">`
         }
 
+        // 观察被替换掉的文本节点，如果发生更新，比如vue之类的框架的绑定
+        const replacedNodeObserver = new MutationObserver(record => {
+            const originTextNode = record[0].target
+            originTextNode.responsedNode.replaceWith(originTextNode)
+        })
+
         let keywords = [],
             reg,
             _switch,
-            highlightedElements = [],
-            mutationByCancel = false // 取消高亮操作导致的Mutation
+            originTextNode = [], // 保存原始textnode
+            needTrack = true // 是否需要关注本轮doom变动
         
         singleton.init = () => {
             // 1. 从storage获取配置
@@ -50,21 +52,23 @@
                 'childList': true,
                 'characterData': true,
                 'subtree': true,
+                'attributes': true,
             }
             mo.observe(document.body, options)
         }
 
-        singleton.highLight = () => {
-            if (mutationByCancel) {
-                mutationByCancel = false
-                return // 取消高亮操作导致的Mutation，直接返回
+        singleton.highLight = (a, b, c) => {
+            if (!needTrack) {
+                needTrack = true
+                return
             }
+
             if (_switch === 'off') return
             if (keywords.length === 0) return
     
             const all = document.all
             const len = all.length
-    
+
             const excludeTagName = ['STYLE', 'LINK', 'SCRIPT', 'META', 'TITLE']
             for (let i = 0; i < len; i++) {
                 const element = all[i]
@@ -72,8 +76,7 @@
                 ;[...element.childNodes]
                     .filter(node => node.nodeType === 3 
                                 && !node.parentNode.dataset.highlighted // 被高亮之后需要标记，否则会无限循环
-                                && !excludeTagName.includes(node.parentElement.tagName.toUpperCase())
-                                && document.body.contains(node))
+                                && !excludeTagName.includes(node.parentElement.tagName.toUpperCase()))
                     .forEach(textNode => {
                         const text = textNode.data
                         if (text.search(reg) === -1) return
@@ -86,22 +89,18 @@
                             }
                         })
                         textNode.replaceWith(newElement)
-                        highlightedElements.push(newElement)
+                        // newElement.outerHTML = newElement.innerHTML
+                        originTextNode.push(textNode)
+                        textNode.responsedNode = newElement
+                        replacedNodeObserver.observe(textNode, { 'characterDataOldValue': true})
+                        needTrack = false
                     })
             }
         }
 
-        singleton.cancelHight = () => {
-            if (highlightedElements.length === 0) return
-            highlightedElements.forEach(element => {
-                try {
-                    element.outerHTML = element.innerText
-                } catch (e) {
-                    console.log(e, element)
-                }
-            })
-            highlightedElements = []
-            mutationByCancel = true
+        singleton.cancelHight = (needTrigerHighlight) => {
+            originTextNode.forEach(node => node.responsedNode.replaceWith(node))
+            originTextNode = []
         }
 
         singleton.on = (event, cb) => {

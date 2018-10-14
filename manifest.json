@@ -18,7 +18,7 @@
 
     "content_scripts": [
         {
-            "js": ["./content_script/regStr.js", "./content_script/highlighter.js"],
+            "js": ["./content_script/watcher.js", "./content_script/regStr.js", "./content_script/highlighter.js"],
             "css": ["./content_script/style.css"],
             "all_frames": true,
             "matches": ["<all_urls>"]
