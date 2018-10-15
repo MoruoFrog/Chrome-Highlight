@@ -1,3 +1,4 @@
+// 和content_scripts通信
 function sendMessageToContentScript(message, callback) {
     chrome.tabs.query({
         active: true,
@@ -30,35 +31,33 @@ document.querySelector('.switch').addEventListener('click', function (e) {
 document.getElementById('reset').addEventListener('click', function (e) {
     document.querySelector('[name=keywords').value = ''
     sendMessageToContentScript({
-        cmd: 'highlight__mor__clearkeyword',
+        cmd: 'highlight__mor__updatekeyword',
+        keywordList: [],
     })
 })
 
 document.getElementById('confirm').addEventListener('click', function (e) {
     const value = document.querySelector('[name=keywords').value.trim()
-    if (!value) return
 
-    const keywordList = value.split(/\s+/)
+    const keywordList = value ? value.split(/\s+/) : []
     sendMessageToContentScript({
         cmd: 'highlight__mor__updatekeyword',
         keywordList,
     })
 })
 
-sendMessageToContentScript({
-    cmd: 'highlight__mor__getsetting',
-}, function (response) {
-    if (!response) return
-    const {cmd, keywords, _switch} = response
-    if (cmd === 'highlight__mor__getsetting') {
-        document.querySelector('[name=keywords]').value = keywords.join('\n')
-        highlightSwitch = _switch
-        if (highlightSwitch === 'off') {
-            switchBar.classList.remove('transition')
-            switchBar.classList.remove('on')
-            setTimeout(() => {
-                switchBar.classList.add('transition')
-            }, 100)
-        }
+const storage  = chrome.storage.local
+storage.get({
+    highlight__mor__keywords: [],
+    highlight__mor__switch: 'on',
+}, items => {
+    document.querySelector('[name=keywords]').value = items.highlight__mor__keywords.join('\n')
+    highlightSwitch = items.highlight__mor__switch
+    if (highlightSwitch === 'off') {
+        switchBar.classList.remove('transition')
+        switchBar.classList.remove('on')
+        setTimeout(() => {
+            switchBar.classList.add('transition')
+        }, 100)
     }
 })
