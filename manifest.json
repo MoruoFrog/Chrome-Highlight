@@ -1,8 +1,8 @@
 {
     "manifest_version": 2,
-    "name": "创宇高亮插件",
+    "name": "More-highlight",
     "version": "1.0.0",
-    "description": "chrome高亮插件",
+    "description": "无任何副作用的chrome高亮插件",
 
     "icons": {
         "16": "icon.png",
@@ -12,7 +12,7 @@
 
     "browser_action": {
         "default_icon": "icon.png",
-        "default_title": "Hello test",
+        "default_title": "more-highlight",
         "default_popup": "./popup/pop.html"
     },
 
