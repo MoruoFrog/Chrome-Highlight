@@ -22,8 +22,7 @@
         let keywords = [],
             reg,
             _switch,
-            originTextNode = [], // 保存原始textnode
-            needTrack = true // 是否需要关注本轮doom变动
+            originTextNode = [] // 保存原始textnode
         
         singleton.init = () => {
             // 1. 从storage获取配置
@@ -58,10 +57,6 @@
         }
 
         singleton.highLight = (a, b, c) => {
-            if (!needTrack) {
-                needTrack = true
-                return
-            }
 
             if (_switch === 'off') return
             if (keywords.length === 0) return
@@ -93,7 +88,6 @@
                         originTextNode.push(textNode)
                         textNode.responsedNode = newElement
                         replacedNodeObserver.observe(textNode, { 'characterDataOldValue': true})
-                        needTrack = false
                     })
             }
         }
