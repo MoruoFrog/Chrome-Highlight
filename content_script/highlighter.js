@@ -14,9 +14,11 @@
         }
 
         // 观察被替换掉的文本节点，如果发生更新，比如vue之类的框架的绑定
-        const replacedNodeObserver = new MutationObserver(record => {
-            const originTextNode = record[0].target
-            originTextNode.responsedNode.replaceWith(originTextNode)
+        const replacedNodeObserver = new MutationObserver(records => {
+            records.forEach(record => {
+                const originTextNode = record.target
+                originTextNode.responsedNode.replaceWith(originTextNode)  
+            })
         })
 
         let keywords = [],
