@@ -32,7 +32,6 @@ const Highlighter = (function() {
 
     // 观察被替换掉的文本节点，如果发生更新，比如vue之类的框架的绑定，替换高亮节点
     const replacedNodeObserver = new MutationObserver(records => {
-        return
         records.forEach(record => {
             const originTextNode = record.target
             originTextNode.responsedNode.replaceWith(originTextNode)  
