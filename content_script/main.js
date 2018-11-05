@@ -2,7 +2,7 @@ const highLighter = new Highlighter(document.body) // from highlighter.js
 highLighter.show()
 
 // get stored keywords and switch
-const storage  = chrome.storage.local
+const storage  = chrome.storage.sync
 storage.get({
     highlight__mor__keywords: [],
     highlight__mor__switch: 'on',
