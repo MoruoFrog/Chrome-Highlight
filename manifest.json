@@ -1,31 +1,33 @@
 {
-    "manifest_version": 2,
-    "name": "More-highlight",
-    "version": "1.0.0",
-    "description": "无任何副作用的chrome高亮插件",
+  "manifest_version": 2,
+  "name": "More-highlight",
+  "version": "1.1.0",
+  "description": "无任何副作用的chrome高亮插件",
 
-    "icons": {
-        "16": "icon.png",
-        "48": "icon.png",
-        "128": "icon.png"
-    },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
 
-    "browser_action": {
-        "default_icon": "icon.png",
-        "default_title": "more-highlight",
-        "default_popup": "./popup/pop.html"
-    },
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_title": "more-highlight",
+    "default_popup": "./popup/pop.html"
+  },
 
-    "content_scripts": [
-        {
-            "js": ["./content_script/highlighter.js", "./content_script/main.js"],
-            "css": ["./content_script/style.css"],
-            "all_frames": true,
-            "matches": ["<all_urls>"]
-        }
+  "content_scripts": [{
+    "js": [
+      "./content_script/message/message.js",
+      "./content_script/highter/highlighter.js",
+      "./content_script/main.js"
     ],
+    "css": ["./content_script/highter/style.css"],
+    "all_frames": true,
+    "matches": ["<all_urls>"]
+  }],
 
-    "permissions": [
-        "storage"
-    ]
+  "permissions": [
+    "storage"
+  ]
 }
